@@ -46,12 +46,15 @@ smf_Odds_Ratio_idx = 6
 TF_Odds_Ratio_idx = 7
 TFF_Odds_Ratio_idx = 8
 
+
 def create_keras_model():
+  """
+  Model definition used in both TF Centralized and TF Federated
+  """
   return tf.keras.models.Sequential([
       tf.keras.layers.Dense(
           1,
           activation='sigmoid',
-          # activation='softmax',
           input_shape=(1,),
           kernel_regularizer=tf.keras.regularizers.l2(1e-6),
       )
@@ -72,6 +75,9 @@ def tensorflow_regress(x, y):
               )
   tf_model.fit(x.reshape(-1,1), y, epochs=50, batch_size=100, verbose=0)
   return tf.exp(tf_model.get_weights()[0])
+
+
+
 
 """TFF Regression"""
 
@@ -135,7 +141,6 @@ def tff_regress(x, y, silos):
 
   state = iterative_process.initialize()
   tff_model = create_keras_model()
-  # step_size = max(NUM_CLIENTS//10, 1)
 
   # Use same federated train data each time
   federated_train_data = make_federated_data(client_dataset_train, np.random.choice(range(NUM_CLIENTS), size=NUM_CLIENTS, replace=False))
@@ -157,6 +162,9 @@ def get_manual_OR(exposed, diseased):
   unexposed_and_diseased = np.sum(np.logical_and(np.logical_not(exposed), diseased))
   odds_ratio = (exposed_and_diseased / exposed_and_no_disease) / (unexposed_and_diseased / unexposed_and_no_disease)
   return odds_ratio
+
+
+
 
 def run_simulation(N, R_0, P_E, SILOS, EFFECT_SIZE):
   R_1 = EFFECT_SIZE*(R_0/(1-R_0)) / (1 + EFFECT_SIZE*(R_0/(1-R_0))) # Disease Prevalence among Exposed
