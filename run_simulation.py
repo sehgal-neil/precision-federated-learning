@@ -1,4 +1,7 @@
 ## Neil Sehgal, April 2022
+"""
+This script estimates an odds ratio for a simulated dataset from the given parameters using TF Federated, centralized TF, and statsmodel.
+"""
 import numpy as np
 import pandas as pd
 import statsmodels.formula.api as smf
